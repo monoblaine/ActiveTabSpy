@@ -147,6 +147,20 @@ void getFirstChildElement(IUIAutomationElement** el, bool releaseOriginalEl) {
     updateEl(hr, el, &tmp, releaseOriginalEl);
 }
 
+void getChildElementAt(IUIAutomationElement** el, int index, bool releaseOriginalEl) {
+    getFirstChildElement(el, false);
+
+    for (int i = 1; i < index; i++) {
+        getNextSiblingElement(el, true);
+    }
+}
+
+void getParentElement(IUIAutomationElement** el, bool releaseOriginalEl) {
+    IUIAutomationElement* tmp;
+    auto hr = treeWalker->GetParentElement(*el, &tmp);
+    updateEl(hr, el, &tmp, releaseOriginalEl);
+}
+
 void getLastChildElement(IUIAutomationElement** el, bool releaseOriginalEl) {
     IUIAutomationElement* tmp;
     auto hr = treeWalker->GetLastChildElement(*el, &tmp);
@@ -162,7 +176,45 @@ bool isActiveTab(IUIAutomationElement* el) {
     return (state & STATE_SYSTEM_SELECTED) != 0;
 }
 
-void inspectActiveTab(HWND hWnd, int isHorizontal, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom, Inspectable* inspectable) {
+static void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom) {
+    VARIANT variant;
+
+    el->GetCurrentPropertyValue(UIA_BoundingRectanglePropertyId, &variant);
+    double* rectData = nullptr;
+    SafeArrayAccessData(variant.parray, (void**) &rectData);
+    *left = (int) rectData[0];
+    *top = (int) rectData[1];
+    *right = *left + (int) rectData[2];
+    *bottom = *top + (int) rectData[3];
+    SafeArrayUnaccessData(variant.parray);
+    VariantClear(&variant);
+
+    auto hr = el->GetCurrentPropertyValue(UIA_ClickablePointPropertyId, &variant);
+
+    if (SUCCEEDED(hr) && variant.vt != VT_EMPTY) {
+        double* pointData = nullptr;
+        SafeArrayAccessData(variant.parray, (void**) &pointData);
+        *pointX = (int) pointData[0];
+        *pointY = (int) pointData[1];
+        SafeArrayUnaccessData(variant.parray);
+    }
+    else {
+        *pointX = *left  + (int) ((*right - *left) / 2);
+        *pointY = *top + (int) ((*bottom - *top) / 2);
+    }
+
+    VariantClear(&variant);
+}
+
+void inspectActiveTab(
+    HWND hWnd, int isHorizontal,
+    int* pointX, int* pointY,
+    int* left, int* right,
+    int* top, int* bottom,
+    int* prevPointX, int* prevPointY,
+    int* nextPointX, int* nextPointY,
+    Inspectable* inspectable
+) {
     if (!uiAutomation) {
         init();
     }
@@ -173,34 +225,43 @@ void inspectActiveTab(HWND hWnd, int isHorizontal, int* pointX, int* pointY, int
     windowEl->Release();
 
     if (activeTab) {
+        IUIAutomationElement* parentEl = activeTab;
+        getParentElement(&parentEl, false);
+        IUIAutomationElement* prevTab = parentEl;
+        IUIAutomationElement* nextTab = parentEl;
         VARIANT variant;
-
-        activeTab->GetCurrentPropertyValue(UIA_BoundingRectanglePropertyId, &variant);
-        double* rectData = nullptr;
-        SafeArrayAccessData(variant.parray, (void**) &rectData);
-        *left = (int) rectData[0];
-        *top = (int) rectData[1];
-        *right = *left + (int) rectData[2];
-        *bottom = *top + (int) rectData[3];
-        SafeArrayUnaccessData(variant.parray);
+        activeTab->GetCurrentPropertyValue(UIA_PositionInSetPropertyId, &variant);
+        auto positionInSet = variant.intVal;
         VariantClear(&variant);
+        activeTab->GetCurrentPropertyValue(UIA_SizeOfSetPropertyId, &variant);
+        auto sizeOfSet = variant.intVal;
+        VariantClear(&variant);
+        auto previousTabIndex = positionInSet - 1;
+        auto nextTabIndex = (positionInSet + 1) % sizeOfSet;
 
-        auto hr = activeTab->GetCurrentPropertyValue(UIA_ClickablePointPropertyId, &variant);
-
-        if (SUCCEEDED(hr) && variant.vt != VT_EMPTY) {
-            double* pointData = nullptr;
-            SafeArrayAccessData(variant.parray, (void**) &pointData);
-            *pointX = (int) pointData[0];
-            *pointY = (int) pointData[1];
-            SafeArrayUnaccessData(variant.parray);
-        }
-        else {
-            *pointX = *left  + (int) ((*right - *left) / 2);
-            *pointY = *top + (int) ((*bottom - *top) / 2);
+        if (previousTabIndex == 0) {
+            previousTabIndex = sizeOfSet;
         }
 
-        VariantClear(&variant);
+        if (nextTabIndex == 0) {
+            nextTabIndex = sizeOfSet;
+        }
+
+        getChildElementAt(&prevTab, previousTabIndex, false);
+        getChildElementAt(&nextTab, nextTabIndex, false);
+
+        collectPointInfo(activeTab, pointX, pointY, left, right, top, bottom);
+        int tmpLeft;
+        int tmpRight;
+        int tmpTop;
+        int tmpBottom;
+        collectPointInfo(prevTab, prevPointX, prevPointY, &tmpLeft, &tmpRight, &tmpTop, &tmpBottom);
+        collectPointInfo(nextTab, nextPointX, nextPointY, &tmpLeft, &tmpRight, &tmpTop, &tmpBottom);
+
         activeTab->Release();
+        prevTab->Release();
+        nextTab->Release();
+        parentEl->Release();
     }
 }
 

@@ -39,6 +39,21 @@ class Ssms18 : public Inspectable {
 
 Ssms18 inspectable;
 
-extern "C" __declspec(dllexport) void inspectActiveTabOnSsms18(HWND hWnd, int isHorizontal, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom) {
-    inspectActiveTab(hWnd, isHorizontal, pointX, pointY, left, right, top, bottom, &inspectable);
+extern "C" __declspec(dllexport) void inspectActiveTabOnSsms18(
+    HWND hWnd, int isHorizontal,
+    int* pointX, int* pointY,
+    int* left, int* right,
+    int* top, int* bottom,
+    int* prevPointX, int* prevPointY,
+    int* nextPointX, int* nextPointY
+) {
+    inspectActiveTab(
+        hWnd, isHorizontal,
+        pointX, pointY,
+        left, right,
+        top, bottom,
+        prevPointX, prevPointY,
+        nextPointX, nextPointY,
+        &inspectable
+    );
 }

@@ -14,5 +14,13 @@ void getPrevSiblingElement(IUIAutomationElement** el, bool releaseOriginalEl = t
 void getFirstChildElement(IUIAutomationElement** el, bool releaseOriginalEl = true);
 void getLastChildElement(IUIAutomationElement** el, bool releaseOriginalEl = true);
 bool isActiveTab(IUIAutomationElement* el);
-void inspectActiveTab(HWND hWnd, int isHorizontal, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom, Inspectable* inspectable);
+void inspectActiveTab(
+    HWND hWnd, int isHorizontal,
+    int* pointX, int* pointY,
+    int* left, int* right,
+    int* top, int* bottom,
+    int* prevPointX, int* prevPointY,
+    int* nextPointX, int* nextPointY,
+    Inspectable* inspectable
+);
 extern "C" __declspec(dllexport) void cleanup();
