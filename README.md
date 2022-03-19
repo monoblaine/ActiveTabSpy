@@ -13,6 +13,7 @@ https://github.com/monoblaine/autohotkey-scripts/blob/master/TabMover.ahk
 * Microsoft Edge
 * Mozilla Firefox
 * Mozilla Thunderbird
-* Visual Studio 2019
+* Visual Studio 2019/2022
 * SQL Server Management Studio 18
 * Foobar2000
+* Windows Terminal
