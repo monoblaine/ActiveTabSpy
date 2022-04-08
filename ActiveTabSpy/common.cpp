@@ -206,6 +206,14 @@ static void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY,
     VariantClear(&variant);
 }
 
+void getWindowEl(HWND hWnd, IUIAutomationElement** el) {
+    if (!uiAutomation) {
+        init();
+    }
+
+    uiAutomation->ElementFromHandle(hWnd, el);
+}
+
 void inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
@@ -215,12 +223,8 @@ void inspectActiveTab(
     int* nextPointX, int* nextPointY,
     Inspectable* inspectable
 ) {
-    if (!uiAutomation) {
-        init();
-    }
-
     IUIAutomationElement* windowEl = nullptr;
-    uiAutomation->ElementFromHandle(hWnd, &windowEl);
+    getWindowEl(hWnd, &windowEl);
     auto activeTab = inspectable->findActiveTab(windowEl, isHorizontal != 0);
     windowEl->Release();
 

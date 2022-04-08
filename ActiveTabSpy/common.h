@@ -14,6 +14,7 @@ void getPrevSiblingElement(IUIAutomationElement** el, bool releaseOriginalEl = t
 void getFirstChildElement(IUIAutomationElement** el, bool releaseOriginalEl = true);
 void getLastChildElement(IUIAutomationElement** el, bool releaseOriginalEl = true);
 bool isActiveTab(IUIAutomationElement* el);
+void getWindowEl(HWND hWnd, IUIAutomationElement** el);
 void inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
