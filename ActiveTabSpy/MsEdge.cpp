@@ -65,3 +65,31 @@ extern "C" __declspec(dllexport) void inspectActiveTabOnMsEdge(
         &inspectable
     );
 }
+
+extern "C" __declspec(dllexport) void getMsEdgeThreeDotBtnStatus(HWND hWnd, int* result) {
+    IUIAutomationElement* el = nullptr;
+    getWindowEl(hWnd, &el);
+    getFirstChildElement(&el); // Intermediate D3D Window
+
+    while (el) {
+        if (getClassName(el).compare(L"BrowserRootView") == 0) {
+            break;
+        }
+
+        getNextSiblingElement(&el);
+    }
+
+    getFirstChildElement(&el);  // NonClientView
+    getFirstChildElement(&el);  // GlassBrowserFrameView
+    getFirstChildElement(&el);  // GlassBrowserCaptionButtonContainer
+    getNextSiblingElement(&el); // BrowserView
+    getFirstChildElement(&el);  // TopContainerView
+    getFirstChildElement(&el);  // TabStripRegionView
+    getNextSiblingElement(&el); // ToolbarView
+    getLastChildElement(&el);   // BrowserAppMenuButton
+
+    BOOL isFocused;
+    el->get_CurrentHasKeyboardFocus(&isFocused);
+    el->Release();
+    *result = isFocused ? 1 : 0;
+}
