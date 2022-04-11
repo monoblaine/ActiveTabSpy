@@ -57,3 +57,96 @@ extern "C" __declspec(dllexport) void inspectActiveTabOnSsms18(
         &inspectable
     );
 }
+
+extern "C" __declspec(dllexport) void getSsms18ResultsGridActiveColumnCoords(
+    HWND hWnd, int* success, int* left, int* right, int* top, int* bottom
+) {
+    *success = 0;
+
+    IUIAutomationElement* el = nullptr;
+    getWindowEl(hWnd, &el);
+    getFirstChildElement(&el);
+
+    while (el) {
+        if (getClassName(el).compare(L"DockRoot") == 0) {
+            break;
+        }
+
+        getNextSiblingElement(&el);
+    }
+
+    getFirstChildElement(&el); // DocumentGroup
+    IUIAutomationSelectionPattern* selectionPattern = nullptr;
+    IUIAutomationElementArray* selections = nullptr;
+    el->GetCurrentPatternAs(
+        UIA_SelectionPatternId,
+        __uuidof(IUIAutomationSelectionPattern),
+        (void**) &selectionPattern
+    );
+    el->Release();
+    selectionPattern->GetCurrentSelection(&selections);
+    selectionPattern->Release();
+    selections->GetElement(0, &el);
+    selections->Release();
+
+    getFirstChildElement(&el);  // Close (Ctrl+F4)
+    getNextSiblingElement(&el); // Toggle pin status (Ctrl+P)
+    getNextSiblingElement(&el); // title bar
+    getNextSiblingElement(&el); // pane
+
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+
+    getNextSiblingElement(&el);
+    getNextSiblingElement(&el);
+
+    getFirstChildElement(&el);
+    IUIAutomationElement* selection = nullptr;
+    el->GetCurrentPatternAs(
+        UIA_SelectionPatternId,
+        __uuidof(IUIAutomationSelectionPattern),
+        (void**) &selectionPattern
+    );
+    selectionPattern->GetCurrentSelection(&selections);
+    selectionPattern->Release();
+    selections->GetElement(0, &selection);
+    selections->Release();
+    auto isResultsTabActive = getElName(selection).compare(L"Results") == 0;
+    selection->Release();
+
+    if (isResultsTabActive) {
+        getFirstChildElement(&el); // Results pane
+        getFirstChildElement(&el); // pane
+        getFirstChildElement(&el); // pane
+        getFirstChildElement(&el); // Results table
+        getFirstChildElement(&el); // First column
+
+        BOOL hasKeyboardFocus = FALSE;
+
+        while (el) {
+            el->get_CurrentHasKeyboardFocus(&hasKeyboardFocus);
+
+            if (hasKeyboardFocus) {
+                break;
+            }
+
+            getNextSiblingElement(&el);
+        }
+
+        if (hasKeyboardFocus) {
+            int pointX;
+            int pointY;
+
+            getFirstChildElement(&el); // header
+            collectPointInfo(el, &pointX, &pointY, left, right, top, bottom);
+            *success = 1;
+        }
+    }
+
+    if (el) {
+        el->Release();
+    }
+}
