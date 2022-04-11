@@ -176,7 +176,7 @@ bool isActiveTab(IUIAutomationElement* el) {
     return (state & STATE_SYSTEM_SELECTED) != 0;
 }
 
-static void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom) {
+void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom) {
     VARIANT variant;
 
     el->GetCurrentPropertyValue(UIA_BoundingRectanglePropertyId, &variant);
