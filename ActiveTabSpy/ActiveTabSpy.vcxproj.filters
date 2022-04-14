@@ -53,5 +53,8 @@
     <ClCompile Include="WindowsTerminal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Chromium.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
