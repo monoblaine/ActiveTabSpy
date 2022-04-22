@@ -56,5 +56,8 @@
     <ClCompile Include="Chromium.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Catsxp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
