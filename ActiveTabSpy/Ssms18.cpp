@@ -151,10 +151,35 @@ extern "C" __declspec(dllexport) void getSsms18ResultsGridActiveColumnCoords(
     }
 }
 
-extern "C" __declspec(dllexport) void isSsms18ResultsTabActive(HWND hWnd, int* result) {
+extern "C" __declspec(dllexport) void isSsms18ResultsTabActiveAndFocused(HWND hWnd, int* result) {
+    IUIAutomationElement* windowEl = nullptr;
     IUIAutomationElement* el = nullptr;
-    getWindowEl(hWnd, &el);
+    getWindowEl(hWnd, &windowEl);
+    el = inspectable.findActiveTab(windowEl, true);
+    getLastChildElement(&el); // pane
     getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el); // Text editor
+
+    BOOL hasKeyboardFocus = FALSE;
+
+    el->get_CurrentHasKeyboardFocus(&hasKeyboardFocus);
+    el->Release();
+
+    if (hasKeyboardFocus) {
+        windowEl->Release();
+        *result = 0;
+        return;
+    }
+
+    el = windowEl;
+    getFirstChildElement(&el);
+    windowEl->Release();
 
     while (el) {
         if (getClassName(el).compare(L"DockRoot") == 0) {
