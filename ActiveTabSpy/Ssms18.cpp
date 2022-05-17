@@ -151,7 +151,15 @@ extern "C" __declspec(dllexport) void getSsms18ResultsGridActiveColumnCoords(
     }
 }
 
-extern "C" __declspec(dllexport) void isSsms18ResultsTabActiveAndFocused(HWND hWnd, int* result) {
+/// <summary>
+/// result,
+/// 0: Other
+/// 1: Text editor
+/// 2: Results tab
+/// </summary>
+/// <param name="hWnd"></param>
+/// <param name="result"></param>
+extern "C" __declspec(dllexport) void getSsms18FocusedItem(HWND hWnd, int* result) {
     IUIAutomationElement* windowEl = nullptr;
     IUIAutomationElement* el = nullptr;
     getWindowEl(hWnd, &windowEl);
@@ -173,7 +181,7 @@ extern "C" __declspec(dllexport) void isSsms18ResultsTabActiveAndFocused(HWND hW
 
     if (hasKeyboardFocus) {
         windowEl->Release();
-        *result = 0;
+        *result = 1;
         return;
     }
 
@@ -231,5 +239,5 @@ extern "C" __declspec(dllexport) void isSsms18ResultsTabActiveAndFocused(HWND hW
     auto isResultsTabActive = getElName(selection).compare(L"Results") == 0;
     selection->Release();
     el->Release();
-    *result = isResultsTabActive ? 1 : 0;
+    *result = isResultsTabActive ? 2 : 0;
 }
