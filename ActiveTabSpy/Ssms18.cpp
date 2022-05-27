@@ -39,7 +39,7 @@ class Ssms18 : public Inspectable {
 
 Ssms18 inspectable;
 
-extern "C" __declspec(dllexport) void inspectActiveTabOnSsms18(
+extern "C" __declspec(dllexport) void Ssms18_inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
     int* left, int* right,
@@ -58,17 +58,13 @@ extern "C" __declspec(dllexport) void inspectActiveTabOnSsms18(
     );
 }
 
-extern "C" __declspec(dllexport) void getSsms18ResultsGridActiveColumnCoords(
-    HWND hWnd, int* success, int* left, int* right, int* top, int* bottom
-) {
-    *success = 0;
-
+extern "C" __declspec(dllexport) int Ssms18_getResultsGridActiveColumnCoords(HWND hWnd, int* left, int* right, int* top, int* bottom) {
     IUIAutomationElement* el = nullptr;
     getWindowEl(hWnd, &el);
     getFirstChildElement(&el);
 
     while (el) {
-        if (getClassName(el).compare(L"DockRoot") == 0) {
+        if (getClassName(el) == L"DockRoot") {
             break;
         }
 
@@ -114,8 +110,10 @@ extern "C" __declspec(dllexport) void getSsms18ResultsGridActiveColumnCoords(
     selectionPattern->Release();
     selections->GetElement(0, &selection);
     selections->Release();
-    auto isResultsTabActive = getElName(selection).compare(L"Results") == 0;
+    auto isResultsTabActive = getElName(selection) == L"Results";
     selection->Release();
+
+    int result = 0;
 
     if (isResultsTabActive) {
         getFirstChildElement(&el); // Results pane
@@ -142,13 +140,15 @@ extern "C" __declspec(dllexport) void getSsms18ResultsGridActiveColumnCoords(
 
             getFirstChildElement(&el); // header
             collectPointInfo(el, &pointX, &pointY, left, right, top, bottom);
-            *success = 1;
+            result = 1;
         }
     }
 
     if (el) {
         el->Release();
     }
+
+    return result;
 }
 
 /// <summary>
@@ -158,8 +158,8 @@ extern "C" __declspec(dllexport) void getSsms18ResultsGridActiveColumnCoords(
 /// 2: Results tab
 /// </summary>
 /// <param name="hWnd"></param>
-/// <param name="result"></param>
-extern "C" __declspec(dllexport) void getSsms18FocusedItem(HWND hWnd, int* result) {
+/// <returns></returns>
+extern "C" __declspec(dllexport) int Ssms18_getActiveArea(HWND hWnd) {
     IUIAutomationElement* windowEl = nullptr;
     IUIAutomationElement* el = nullptr;
     getWindowEl(hWnd, &windowEl);
@@ -181,8 +181,7 @@ extern "C" __declspec(dllexport) void getSsms18FocusedItem(HWND hWnd, int* resul
 
     if (hasKeyboardFocus) {
         windowEl->Release();
-        *result = 1;
-        return;
+        return 1;
     }
 
     el = windowEl;
@@ -190,7 +189,7 @@ extern "C" __declspec(dllexport) void getSsms18FocusedItem(HWND hWnd, int* resul
     windowEl->Release();
 
     while (el) {
-        if (getClassName(el).compare(L"DockRoot") == 0) {
+        if (getClassName(el) == L"DockRoot") {
             break;
         }
 
@@ -236,8 +235,104 @@ extern "C" __declspec(dllexport) void getSsms18FocusedItem(HWND hWnd, int* resul
     selectionPattern->Release();
     selections->GetElement(0, &selection);
     selections->Release();
-    auto isResultsTabActive = getElName(selection).compare(L"Results") == 0;
+    auto isResultsTabActive = getElName(selection) == L"Results";
     selection->Release();
     el->Release();
-    *result = isResultsTabActive ? 2 : 0;
+    return isResultsTabActive ? 2 : 0;
+}
+
+extern "C" __declspec(dllexport) BSTR Ssms18_getCellContent(int* result) {
+    IUIAutomationElement* el = nullptr;
+    IUIAutomationElement* tmp = nullptr;
+    BSTR cellContent;
+
+    getFocusedElement(&el);
+
+    if (!isOfType(el, UIA_EditControlTypeId)) {
+        goto fail;
+    }
+
+    tmp = el;
+    getParentElement(&tmp, false);
+
+    if (!tmp) {
+        goto fail;
+    }
+
+    getParentElement(&tmp);
+
+    if (getElName(tmp) != L"Results") {
+        goto fail;
+    }
+
+    tmp->Release();
+    tmp = nullptr;
+    cellContent = getElBstrValue(el);
+    el->Release();
+    el = nullptr;
+    *result = 1;
+
+    return cellContent;
+
+fail:
+    *result = 0;
+
+    if (tmp) {
+        tmp->Release();
+        tmp = nullptr;
+    }
+
+    if (el) {
+        el->Release();
+        el = nullptr;
+    }
+
+    return nullptr;
+}
+
+extern "C" __declspec(dllexport) int Ssms18_getObjectExplorerNodeType() {
+    IUIAutomationElement* el = nullptr;
+    getFocusedElement(&el);
+    getParentElement(&el);
+    auto elementName = getElName(el);
+    el->Release();
+    el = nullptr;
+
+    if (elementName == L"Tables") {
+        return 1;
+    }
+
+    if (elementName == L"Views") {
+        return 2;
+    }
+
+    if (elementName == L"Stored Procedures") {
+        return 3;
+    }
+
+    if (elementName == L"Table-valued Functions") {
+        return 4;
+    }
+
+    if (elementName == L"Scalar-valued Functions") {
+        return 5;
+    }
+
+    if (elementName == L"Keys") {
+        return 6;
+    }
+
+    if (elementName == L"Constraints") {
+        return 7;
+    }
+
+    if (elementName == L"Triggers") {
+        return 8;
+    }
+
+    if (elementName == L"Indexes") {
+        return 9;
+    }
+
+    return 0;
 }

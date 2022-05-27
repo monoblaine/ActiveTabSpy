@@ -164,7 +164,7 @@ class Vs2022 : public Inspectable {
 
 Vs2022 inspectable;
 
-extern "C" __declspec(dllexport) void inspectActiveTabOnVs2022(
+extern "C" __declspec(dllexport) void Vs2022_inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
     int* left, int* right,

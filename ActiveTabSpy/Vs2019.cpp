@@ -106,7 +106,7 @@ class Vs2019 : public Inspectable {
 
 Vs2019 inspectable;
 
-extern "C" __declspec(dllexport) void inspectActiveTabOnVs2019(
+extern "C" __declspec(dllexport) void Vs2019_inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
     int* left, int* right,

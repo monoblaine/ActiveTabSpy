@@ -30,7 +30,7 @@ class Foobar2000 : public Inspectable {
 
 Foobar2000 inspectable;
 
-extern "C" __declspec(dllexport) void inspectActiveTabOnFoobar2000(
+extern "C" __declspec(dllexport) void Foobar2000_inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
     int* left, int* right,

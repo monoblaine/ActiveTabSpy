@@ -31,7 +31,7 @@ class WindowsTerminal : public Inspectable {
 
 WindowsTerminal inspectable;
 
-extern "C" __declspec(dllexport) void inspectActiveTabOnWindowsTerminal(
+extern "C" __declspec(dllexport) void WindowsTerminal_inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
     int* left, int* right,

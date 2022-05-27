@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "common.h"
 
-extern "C" __declspec(dllexport) void getCatsxpThreeDotBtnStatus(HWND hWnd, int* result) {
+extern "C" __declspec(dllexport) int Catsxp_getThreeDotBtnStatus(HWND hWnd) {
     IUIAutomationElement* el = nullptr;
     getWindowEl(hWnd, &el);
     getLastChildElement(&el);   // Catsxp
@@ -15,10 +15,10 @@ extern "C" __declspec(dllexport) void getCatsxpThreeDotBtnStatus(HWND hWnd, int*
     BOOL isFocused;
     el->get_CurrentHasKeyboardFocus(&isFocused);
     el->Release();
-    *result = isFocused ? 1 : 0;
+    return isFocused ? 1 : 0;
 }
 
-extern "C" __declspec(dllexport) void isCatsxpAddressBarFocused(HWND hWnd, int* result) {
+extern "C" __declspec(dllexport) int Catsxp_isAddressBarFocused(HWND hWnd) {
     IUIAutomationElement* el = nullptr;
     getWindowEl(hWnd, &el);
     getLastChildElement(&el);   // Catsxp
@@ -36,5 +36,5 @@ extern "C" __declspec(dllexport) void isCatsxpAddressBarFocused(HWND hWnd, int* 
     BOOL isFocused;
     el->get_CurrentHasKeyboardFocus(&isFocused);
     el->Release();
-    *result = isFocused ? 1 : 0;
+    return isFocused ? 1 : 0;
 }

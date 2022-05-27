@@ -55,30 +55,14 @@ bool isOfType(IUIAutomationElement* el, CONTROLTYPEID typeId) {
     return SUCCEEDED(hr) && currentControlTypeId == typeId;
 }
 
-static bool bstrCompare(BSTR bstr, const wchar_t* str) {
-    if (!bstr) {
-        return false;
-    }
-
-    auto bstrLen = SysStringLen(bstr);
-
-    if (bstrLen < 1) {
-        return false;
-    }
-
-    std::wstring wstr(str);
-    const size_t maxLen = min(wstr.size(), static_cast<size_t>(bstrLen));
-
-    return wcsncmp(wstr.c_str(), bstr, maxLen) == 0;
-}
-
 bool isClsMatch(IUIAutomationElement* el, const wchar_t* clsName) {
     BSTR currentClsName;
     auto hr = el->get_CurrentClassName(&currentClsName);
     bool isMatch;
 
     if (SUCCEEDED(hr)) {
-        isMatch = bstrCompare(currentClsName, clsName);
+        std::wstring currentClsNameWStr(currentClsName);
+        isMatch = currentClsNameWStr.compare(clsName) == 0;
     }
     else {
         isMatch = false;
@@ -96,6 +80,15 @@ std::wstring getElName(IUIAutomationElement* el) {
     SysFreeString(bstr);
 
     return name;
+}
+
+BSTR getElBstrValue(IUIAutomationElement* el) {
+    VARIANT variant;
+    el->GetCurrentPropertyValue(UIA_LegacyIAccessibleValuePropertyId, &variant);
+    el->Release();
+    BSTR value = SysAllocString(variant.bstrVal);
+    VariantClear(&variant);
+    return value;
 }
 
 std::wstring getAutomationId(IUIAutomationElement* el) {
@@ -210,8 +203,14 @@ void getWindowEl(HWND hWnd, IUIAutomationElement** el) {
     if (!uiAutomation) {
         init();
     }
-
     uiAutomation->ElementFromHandle(hWnd, el);
+}
+
+void getFocusedElement(IUIAutomationElement** el) {
+    if (!uiAutomation) {
+        init();
+    }
+    uiAutomation->GetFocusedElement(el);
 }
 
 void inspectActiveTab(

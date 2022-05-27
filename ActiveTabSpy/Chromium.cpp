@@ -32,7 +32,7 @@ class Chromium : public Inspectable {
 
 Chromium inspectable;
 
-extern "C" __declspec(dllexport) void inspectActiveTabOnChromium(
+extern "C" __declspec(dllexport) void Chromium_inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
     int* left, int* right,
@@ -51,7 +51,7 @@ extern "C" __declspec(dllexport) void inspectActiveTabOnChromium(
     );
 }
 
-extern "C" __declspec(dllexport) void getChromiumThreeDotBtnStatus(HWND hWnd, int* result) {
+extern "C" __declspec(dllexport) int Chromium_getThreeDotBtnStatus(HWND hWnd) {
     IUIAutomationElement* el = nullptr;
     getWindowEl(hWnd, &el);
     getLastChildElement(&el); // Chromium
@@ -65,5 +65,5 @@ extern "C" __declspec(dllexport) void getChromiumThreeDotBtnStatus(HWND hWnd, in
     BOOL isFocused;
     el->get_CurrentHasKeyboardFocus(&isFocused);
     el->Release();
-    *result = isFocused ? 1 : 0;
+    return isFocused ? 1 : 0;
 }

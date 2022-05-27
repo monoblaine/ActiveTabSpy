@@ -9,7 +9,7 @@ class MsEdge : public Inspectable {
         getFirstChildElement(&el, false); // Intermediate D3D Window
 
         while (el) {
-            if (getClassName(el).compare(L"BrowserRootView") == 0) {
+            if (getClassName(el) == L"BrowserRootView") {
                 break;
             }
 
@@ -47,7 +47,7 @@ class MsEdge : public Inspectable {
 
 MsEdge inspectable;
 
-extern "C" __declspec(dllexport) void inspectActiveTabOnMsEdge(
+extern "C" __declspec(dllexport) void MsEdge_inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
     int* left, int* right,
@@ -66,13 +66,13 @@ extern "C" __declspec(dllexport) void inspectActiveTabOnMsEdge(
     );
 }
 
-extern "C" __declspec(dllexport) void getMsEdgeThreeDotBtnStatus(HWND hWnd, int* result) {
+extern "C" __declspec(dllexport) int MsEdge_getThreeDotBtnStatus(HWND hWnd) {
     IUIAutomationElement* el = nullptr;
     getWindowEl(hWnd, &el);
     getFirstChildElement(&el); // Intermediate D3D Window
 
     while (el) {
-        if (getClassName(el).compare(L"BrowserRootView") == 0) {
+        if (getClassName(el) == L"BrowserRootView") {
             break;
         }
 
@@ -91,5 +91,5 @@ extern "C" __declspec(dllexport) void getMsEdgeThreeDotBtnStatus(HWND hWnd, int*
     BOOL isFocused;
     el->get_CurrentHasKeyboardFocus(&isFocused);
     el->Release();
-    *result = isFocused ? 1 : 0;
+    return isFocused ? 1 : 0;
 }
