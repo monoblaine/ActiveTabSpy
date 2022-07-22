@@ -298,39 +298,39 @@ extern "C" __declspec(dllexport) int Ssms18_getObjectExplorerNodeType() {
     el->Release();
     el = nullptr;
 
-    if (elementName == L"Tables") {
+    if (elementName.find(L"Tables") == 0) {
         return 1;
     }
 
-    if (elementName == L"Views") {
+    if (elementName.find(L"Views") == 0) {
         return 2;
     }
 
-    if (elementName == L"Stored Procedures") {
+    if (elementName.find(L"Stored Procedures") == 0) {
         return 3;
     }
 
-    if (elementName == L"Table-valued Functions") {
+    if (elementName.find(L"Table-valued Functions") == 0) {
         return 4;
     }
 
-    if (elementName == L"Scalar-valued Functions") {
+    if (elementName.find(L"Scalar-valued Functions") == 0) {
         return 5;
     }
 
-    if (elementName == L"Keys") {
+    if (elementName.find(L"Keys") == 0) {
         return 6;
     }
 
-    if (elementName == L"Constraints") {
+    if (elementName.find(L"Constraints") == 0) {
         return 7;
     }
 
-    if (elementName == L"Triggers") {
+    if (elementName.find(L"Triggers") == 0) {
         return 8;
     }
 
-    if (elementName == L"Indexes") {
+    if (elementName.find(L"Indexes") == 0) {
         return 9;
     }
 
