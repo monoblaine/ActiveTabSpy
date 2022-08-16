@@ -182,3 +182,12 @@ extern "C" __declspec(dllexport) void Vs2022_inspectActiveTab(
         &inspectable
     );
 }
+
+extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused() {
+    IUIAutomationElement* el = nullptr;
+    getFocusedElement(&el);
+    auto elementName = getElName(el);
+    el->Release();
+    el = nullptr;
+    return elementName == L"Text Editor" ? 1 : 0;
+}
