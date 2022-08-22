@@ -183,11 +183,19 @@ extern "C" __declspec(dllexport) void Vs2022_inspectActiveTab(
     );
 }
 
-extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused() {
+extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused(HWND hWnd) {
     IUIAutomationElement* el = nullptr;
     getFocusedElement(&el);
     auto elementName = getElName(el);
     el->Release();
     el = nullptr;
-    return elementName == L"Text Editor" ? 1 : 0;
+    if (elementName != L"Text Editor") {
+        return 0;
+    }
+    getWindowEl(hWnd, &el);
+    getFirstChildElement(&el);
+    int result = isOfType(el, UIA_WindowControlTypeId) && getClassName(el) == L"Popup" ? 0 : 1;
+    el->Release();
+    el = nullptr;
+    return result;
 }
