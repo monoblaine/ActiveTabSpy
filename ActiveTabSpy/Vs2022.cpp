@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "common.h"
 
-const COLORREF activeTabColor = RGB(0x00, 0x6C, 0xBE);
+const COLORREF activeTabColor            = RGB(0x00, 0x6C, 0xBE);
+const COLORREF methodImageColor          = RGB(0xBA, 0xA5, 0xD6);
+const COLORREF extensionMethodImageColor = RGB(0xEA, 0xE7, 0xF0);
 
 static bool isActiveTabByColor(IUIAutomationElement* tabItem) {
     RECT rect;
@@ -197,5 +199,58 @@ extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused(HWND hWnd) {
     int result = isOfType(el, UIA_WindowControlTypeId) && getClassName(el) == L"Popup" ? 0 : 1;
     el->Release();
     el = nullptr;
+    return result;
+}
+
+extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HWND hWnd) {
+    IUIAutomationElement* el = nullptr;
+    IUIAutomationElement* menuItemOrImage = nullptr;
+    getFocusedElement(&el);
+    auto elementName = getElName(el);
+    el->Release();
+    el = nullptr;
+    if (elementName != L"Text Editor") {
+        return 0;
+    }
+    getWindowEl(hWnd, &el);
+    getFirstChildElement(&el);
+    int result = 0;
+    auto intelliSensePopupIsOpen = el && isOfType(el, UIA_WindowControlTypeId) && getClassName(el) == L"Popup";
+    if (!intelliSensePopupIsOpen) {
+        goto cleanup;
+    }
+    getLastChildElement(&el);
+    if (!el) {
+        goto cleanup;
+    }
+    getFirstChildElement(&el);
+    if (!el || !isOfType(el, UIA_ListControlTypeId)) {
+        goto cleanup;
+    }
+    menuItemOrImage = getSelection(el);
+    if (!menuItemOrImage || !isOfType(menuItemOrImage, UIA_MenuItemControlTypeId)) {
+        goto cleanup;
+    }
+    getFirstChildElement(&menuItemOrImage); // image
+    if (!menuItemOrImage || !isOfType(menuItemOrImage, UIA_ImageControlTypeId)) {
+        goto cleanup;
+    }
+    int pointX, pointY, left, right, top, bottom;
+    collectPointInfo(menuItemOrImage, &pointX, &pointY, &left, &right, &top, &bottom);
+    switch (getPixel(pointX, pointY)) {
+        case methodImageColor:
+        case extensionMethodImageColor:
+            result = 1;
+            break;
+    }
+cleanup:
+    if (el) {
+        el->Release();
+        el = nullptr;
+    }
+    if (menuItemOrImage) {
+        menuItemOrImage->Release();
+        menuItemOrImage = nullptr;
+    }
     return result;
 }
