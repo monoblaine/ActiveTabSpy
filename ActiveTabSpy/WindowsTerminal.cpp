@@ -5,8 +5,10 @@ class WindowsTerminal : public Inspectable {
     public:
     virtual IUIAutomationElement* findActiveTab(IUIAutomationElement* windowEl, bool isHorizontal) {
         IUIAutomationElement* el = windowEl;
-
-        getFirstChildElement(&el, false); // DRAG_BAR_WINDOW_CLASS
+        getFirstChildElement(&el, false);
+        while (getClassName(el) != L"DRAG_BAR_WINDOW_CLASS") {
+            getNextSiblingElement(&el);
+        }
         getNextSiblingElement(&el);
         getFirstChildElement(&el);
         getFirstChildElement(&el);
