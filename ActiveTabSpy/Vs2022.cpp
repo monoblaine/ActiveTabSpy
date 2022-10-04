@@ -225,10 +225,6 @@ extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HW
     if (!intelliSensePopupIsOpen) {
         goto cleanup;
     }
-    else if (intelliSensePopupIsEnough) {
-        result = 1;
-        goto cleanup;
-    }
     getLastChildElement(&el);
     if (!el) {
         goto cleanup;
@@ -251,6 +247,11 @@ extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HW
         case methodImageColor:
         case extensionMethodImageColor:
             result = 1;
+            break;
+        default:
+            if (intelliSensePopupIsEnough) {
+                result = 2;
+            }
             break;
     }
 cleanup:
