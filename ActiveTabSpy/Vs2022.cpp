@@ -208,7 +208,7 @@ extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused(HWND hWnd) {
     return result;
 }
 
-extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HWND hWnd) {
+extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HWND hWnd, int intelliSensePopupIsEnough) {
     IUIAutomationElement* el = nullptr;
     IUIAutomationElement* menuItemOrImage = nullptr;
     getFocusedElement(&el);
@@ -223,6 +223,10 @@ extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HW
     int result = 0;
     auto intelliSensePopupIsOpen = el && isOfType(el, UIA_WindowControlTypeId) && getClassName(el) == L"Popup";
     if (!intelliSensePopupIsOpen) {
+        goto cleanup;
+    }
+    else if (intelliSensePopupIsEnough) {
+        result = 1;
         goto cleanup;
     }
     getLastChildElement(&el);
