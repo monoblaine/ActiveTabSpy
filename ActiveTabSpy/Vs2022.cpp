@@ -4,6 +4,7 @@
 const COLORREF activeTabColor            = RGB(0x00, 0x6C, 0xBE);
 const COLORREF methodImageColor          = RGB(0xBA, 0xA5, 0xD6);
 const COLORREF extensionMethodImageColor = RGB(0xEA, 0xE7, 0xF0);
+const COLORREF classImageColor           = RGB(0x98, 0x6D, 0x00);
 
 static bool isActiveTabByColor(IUIAutomationElement* tabItem) {
     RECT rect;
