@@ -238,32 +238,34 @@ void inspectActiveTab(
         VariantClear(&variant);
         activeTab->GetCurrentPropertyValue(UIA_SizeOfSetPropertyId, &variant);
         auto sizeOfSet = variant.intVal;
+        auto sizeOfSetFound = sizeOfSet > 0;
         VariantClear(&variant);
-        auto previousTabIndex = positionInSet - 1;
-        auto nextTabIndex = (positionInSet + 1) % sizeOfSet;
-
-        if (previousTabIndex == 0) {
-            previousTabIndex = sizeOfSet;
+        if (sizeOfSetFound) {
+            auto previousTabIndex = positionInSet - 1;
+            auto nextTabIndex = (positionInSet + 1) % sizeOfSet;
+            if (previousTabIndex == 0) {
+                previousTabIndex = sizeOfSet;
+            }
+            if (nextTabIndex == 0) {
+                nextTabIndex = sizeOfSet;
+            }
+            getChildElementAt(&prevTab, previousTabIndex, false);
+            getChildElementAt(&nextTab, nextTabIndex, false);
         }
-
-        if (nextTabIndex == 0) {
-            nextTabIndex = sizeOfSet;
-        }
-
-        getChildElementAt(&prevTab, previousTabIndex, false);
-        getChildElementAt(&nextTab, nextTabIndex, false);
-
         collectPointInfo(activeTab, pointX, pointY, left, right, top, bottom);
-        int tmpLeft;
-        int tmpRight;
-        int tmpTop;
-        int tmpBottom;
-        collectPointInfo(prevTab, prevPointX, prevPointY, &tmpLeft, &tmpRight, &tmpTop, &tmpBottom);
-        collectPointInfo(nextTab, nextPointX, nextPointY, &tmpLeft, &tmpRight, &tmpTop, &tmpBottom);
-
+        if (sizeOfSetFound) {
+            int tmpLeft;
+            int tmpRight;
+            int tmpTop;
+            int tmpBottom;
+            collectPointInfo(prevTab, prevPointX, prevPointY, &tmpLeft, &tmpRight, &tmpTop, &tmpBottom);
+            collectPointInfo(nextTab, nextPointX, nextPointY, &tmpLeft, &tmpRight, &tmpTop, &tmpBottom);
+        }
         activeTab->Release();
-        prevTab->Release();
-        nextTab->Release();
+        if (sizeOfSetFound) {
+            prevTab->Release();
+            nextTab->Release();
+        }
         parentEl->Release();
     }
 }
