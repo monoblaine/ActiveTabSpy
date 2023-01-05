@@ -162,6 +162,7 @@
     <ClCompile Include="Catsxp.cpp" />
     <ClCompile Include="Chromium.cpp" />
     <ClCompile Include="common.cpp" />
+    <ClCompile Include="CopyQ.cpp" />
     <ClCompile Include="Firefox.cpp" />
     <ClCompile Include="Foobar2000.cpp" />
     <ClCompile Include="MsEdge.cpp" />
