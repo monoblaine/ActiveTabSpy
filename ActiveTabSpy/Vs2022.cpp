@@ -211,10 +211,11 @@ extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused(HWND hWnd) {
 extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HWND hWnd, int intelliSensePopupIsEnough) {
     IUIAutomationElement* el = nullptr;
     IUIAutomationElement* menuItemOrImage = nullptr;
+    bool intelliSensePopupIsOpen;
     getWindowEl(hWnd, &el);
     getFirstChildElement(&el);
     int result = 0;
-    auto intelliSensePopupIsOpen = el && isOfType(el, UIA_WindowControlTypeId) && getClassName(el) == L"Popup";
+    intelliSensePopupIsOpen = el && isOfType(el, UIA_WindowControlTypeId) && getClassName(el) == L"Popup";
     if (!intelliSensePopupIsOpen) {
         goto cleanup;
     }
