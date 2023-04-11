@@ -234,6 +234,9 @@ extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HW
         goto cleanup;
     }
     getFirstChildElement(&el);
+    if (el && isOfType(el, UIA_CustomControlTypeId)) {
+        getFirstChildElement(&el);
+    }
     if (!el || !isOfType(el, UIA_ListControlTypeId)) {
         goto cleanup;
     }
