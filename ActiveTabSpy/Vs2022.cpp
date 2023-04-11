@@ -208,13 +208,23 @@ extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused(HWND hWnd) {
     return result;
 }
 
+static bool endsWith (const std::wstring& str, const std::wstring& suffix) {
+    return str.size() >= suffix.size()
+        && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
+}
+
 extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HWND hWnd, int intelliSensePopupIsEnough) {
     IUIAutomationElement* el = nullptr;
     IUIAutomationElement* menuItemOrImage = nullptr;
     bool intelliSensePopupIsOpen;
     getWindowEl(hWnd, &el);
-    getFirstChildElement(&el);
     int result = 0;
+    auto elementName = getElName(el);
+    elementName.erase(elementName.find_last_not_of(L" \n\r\t") + 1);
+    if (endsWith(elementName, L".js") || endsWith(elementName, L".JS")) {
+        goto cleanup;
+    }
+    getFirstChildElement(&el);
     intelliSensePopupIsOpen = el && isOfType(el, UIA_WindowControlTypeId) && getClassName(el) == L"Popup";
     if (!intelliSensePopupIsOpen) {
         goto cleanup;
