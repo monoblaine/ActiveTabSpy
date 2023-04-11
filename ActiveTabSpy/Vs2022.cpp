@@ -211,13 +211,6 @@ extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused(HWND hWnd) {
 extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HWND hWnd, int intelliSensePopupIsEnough) {
     IUIAutomationElement* el = nullptr;
     IUIAutomationElement* menuItemOrImage = nullptr;
-    getFocusedElement(&el);
-    auto elementName = getElName(el);
-    el->Release();
-    el = nullptr;
-    if (elementName != L"Text Editor") {
-        return 0;
-    }
     getWindowEl(hWnd, &el);
     getFirstChildElement(&el);
     int result = 0;
