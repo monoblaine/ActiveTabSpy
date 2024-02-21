@@ -26,8 +26,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,4,0,0
- PRODUCTVERSION 1,4,0,0
+ FILEVERSION 1,5,0,0
+ PRODUCTVERSION 1,5,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -44,12 +44,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Serhan Apaydın"
             VALUE "FileDescription", "Automation API Utilities"
-            VALUE "FileVersion", "1.4.0.0"
+            VALUE "FileVersion", "1.5.0.0"
             VALUE "InternalName", "ActiveTabSpy.dll"
             VALUE "LegalCopyright", "Copyright (C) Serhan Apaydın 2022"
             VALUE "OriginalFilename", "ActiveTabSpy.dll"
             VALUE "ProductName", "ActiveTabSpy"
-            VALUE "ProductVersion", "1.4.0.0"
+            VALUE "ProductVersion", "1.5.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -63,7 +63,7 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Turkish (Turkey) resources
+// Turkish (TÃ¼rkiye) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_TRK)
 LANGUAGE LANG_TURKISH, SUBLANG_DEFAULT
@@ -93,7 +93,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Turkish (Turkey) resources
+#endif    // Turkish (TÃ¼rkiye) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
