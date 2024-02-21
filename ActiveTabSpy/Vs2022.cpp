@@ -272,3 +272,15 @@ cleanup:
     }
     return result;
 }
+
+extern "C" __declspec(dllexport) int Vs2022_popupWinExists(HWND hWnd) {
+    IUIAutomationElement* el = nullptr;
+    getWindowEl(hWnd, &el);
+    getFirstChildElement(&el);
+    int result = el && isOfType(el, UIA_WindowControlTypeId) && getClassName(el) == L"Popup";
+    if (el) {
+        el->Release();
+        el = nullptr;
+    }
+    return result;
+}
