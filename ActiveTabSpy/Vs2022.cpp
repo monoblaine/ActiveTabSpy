@@ -2,8 +2,8 @@
 #include "common.h"
 
 const COLORREF activeTabColor            = RGB(0x00, 0x6C, 0xBE);
-const COLORREF methodImageColor          = RGB(0xBA, 0xA5, 0xD6);
-const COLORREF extensionMethodImageColor = RGB(0xEA, 0xE7, 0xF0);
+const COLORREF methodImageColor          = RGB(0xC2, 0xB1, 0xD6);
+const COLORREF extensionMethodImageColor = RGB(0xA3, 0x87, 0xC3);
 const COLORREF classImageColor           = RGB(0x98, 0x6D, 0x00);
 
 static bool isActiveTabByColor(IUIAutomationElement* tabItem) {
@@ -217,6 +217,7 @@ extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HW
     IUIAutomationElement* el = nullptr;
     IUIAutomationElement* menuItemOrImage = nullptr;
     bool intelliSensePopupIsOpen;
+    COLORREF pixelColor;
     getWindowEl(hWnd, &el);
     int result = 0;
     auto elementName = getElName(el);
@@ -250,7 +251,8 @@ extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HW
     }
     int pointX, pointY, left, right, top, bottom;
     collectPointInfo(menuItemOrImage, &pointX, &pointY, &left, &right, &top, &bottom);
-    switch (getPixel(pointX, pointY)) {
+    pixelColor = getPixel(pointX, pointY + 3);
+    switch (pixelColor) {
         case methodImageColor:
         case extensionMethodImageColor:
             result = 1;
