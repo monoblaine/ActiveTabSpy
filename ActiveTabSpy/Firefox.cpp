@@ -3,8 +3,11 @@
 
 static inline bool isTabsToolbar(IUIAutomationElement* el) {
     auto automationId = getAutomationId(el);
-
-    return automationId == L"TabsToolbar" || automationId == L"tabs-toolbar";
+    return
+        // Firefox
+        automationId == L"TabsToolbar" ||
+        // Thunderbird
+        automationId == L"tabs-toolbar";
 }
 
 class Firefox : public Inspectable {
