@@ -10,6 +10,15 @@ static inline bool isTabsToolbar(IUIAutomationElement* el) {
         automationId == L"tabs-toolbar";
 }
 
+static inline bool isTabBrowserTabs(IUIAutomationElement* el) {
+    auto automationId = getAutomationId(el);
+    return
+        // Firefox
+        automationId == L"tabbrowser-tabs" ||
+        // Thunderbird
+        automationId == L"tabmail-tabs";
+}
+
 class Firefox : public Inspectable {
     public:
     virtual IUIAutomationElement* findActiveTab(IUIAutomationElement* windowEl, bool isHorizontal) {
@@ -21,6 +30,9 @@ class Firefox : public Inspectable {
         while (!isTabsToolbar(el));
 
         getFirstChildElement(&el);
+
+        while (!isTabBrowserTabs(el))
+        getNextSiblingElement(&el);
 
         IUIAutomationSelectionPattern* selectionPattern = nullptr;
         IUIAutomationElementArray* selections = nullptr;
