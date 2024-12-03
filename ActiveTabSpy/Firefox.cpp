@@ -16,9 +16,11 @@ class Firefox : public Inspectable {
         IUIAutomationElement* el = windowEl;
 
         getFirstChildElement(&el, false); // MozillaCompositorWindowClass
+
         do getNextSiblingElement(&el);
         while (!isTabsToolbar(el));
-        getFirstChildElement(&el); // tabbrowser-tabs or tabmail-tabs
+
+        getFirstChildElement(&el);
 
         IUIAutomationSelectionPattern* selectionPattern = nullptr;
         IUIAutomationElementArray* selections = nullptr;
