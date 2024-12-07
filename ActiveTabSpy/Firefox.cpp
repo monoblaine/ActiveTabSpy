@@ -23,17 +23,14 @@ class Firefox : public Inspectable {
     public:
     virtual IUIAutomationElement* findActiveTab(IUIAutomationElement* windowEl, bool isHorizontal) {
         IUIAutomationElement* el = windowEl;
-
         getFirstChildElement(&el, false); // MozillaCompositorWindowClass
-
-        do getNextSiblingElement(&el);
-        while (!isTabsToolbar(el));
-
+        do {
+            getNextSiblingElement(&el);
+        } while (!isTabsToolbar(el));
         getFirstChildElement(&el);
-
-        while (!isTabBrowserTabs(el))
-        getNextSiblingElement(&el);
-
+        while (!isTabBrowserTabs(el)) {
+            getNextSiblingElement(&el);
+        }
         IUIAutomationSelectionPattern* selectionPattern = nullptr;
         IUIAutomationElementArray* selections = nullptr;
         IUIAutomationElement* selection = nullptr;
@@ -47,7 +44,6 @@ class Firefox : public Inspectable {
         selectionPattern->Release();
         selections->GetElement(0, &selection);
         selections->Release();
-
         return selection;
     }
 };
