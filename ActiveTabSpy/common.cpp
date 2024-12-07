@@ -163,10 +163,9 @@ void getLastChildElement(IUIAutomationElement** el, bool releaseOriginalEl) {
 bool isActiveTab(IUIAutomationElement* el) {
     VARIANT variant;
     el->GetCurrentPropertyValue(UIA_LegacyIAccessibleStatePropertyId, &variant);
-    auto state = variant.intVal;
+    auto currentState = variant.intVal;
     VariantClear(&variant);
-
-    return (state & STATE_SYSTEM_SELECTED) != 0;
+    return (currentState & STATE_SYSTEM_SELECTED) != 0;
 }
 
 void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom) {
