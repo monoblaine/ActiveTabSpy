@@ -17,6 +17,7 @@ void getChildElementAt(IUIAutomationElement** el, int index, bool releaseOrigina
 void getParentElement(IUIAutomationElement** el, bool releaseOriginalEl = true);
 void getLastChildElement(IUIAutomationElement** el, bool releaseOriginalEl = true);
 bool isActiveTab(IUIAutomationElement* el);
+bool isButtonPressed(IUIAutomationElement* el);
 void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom);
 void getWindowEl(HWND hWnd, IUIAutomationElement** el);
 void getFocusedElement(IUIAutomationElement** el);

@@ -68,3 +68,20 @@ extern "C" __declspec(dllexport) void Firefox_inspectActiveTab(
         &inspectable
     );
 }
+
+extern "C" __declspec(dllexport) void FirefoxDevTools_inspectTabOn(
+    HWND hWnd, int tabNumber,
+    int* pointX, int* pointY
+) {
+    IUIAutomationElement* el = nullptr;
+    getWindowEl(hWnd, &el);
+    getLastChildElement(&el, true);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getFirstChildElement(&el);
+    getChildElementAt(&el, tabNumber, true);
+    int left, right, top, bottom;
+    collectPointInfo(el, pointX, pointY, &left, &right, &top, &bottom);
+    el->Release();
+    el = nullptr;
+}

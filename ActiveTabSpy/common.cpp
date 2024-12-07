@@ -172,6 +172,10 @@ bool isActiveTab(IUIAutomationElement* el) {
     return containsState(el, STATE_SYSTEM_SELECTED);
 }
 
+bool isButtonPressed(IUIAutomationElement* el) {
+    return containsState(el, STATE_SYSTEM_PRESSED);
+}
+
 void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom) {
     VARIANT variant;
 
