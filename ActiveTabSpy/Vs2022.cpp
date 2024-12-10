@@ -3,6 +3,7 @@
 
 const COLORREF activeTabColor            = RGB(0x00, 0x6C, 0xBE);
 const COLORREF methodImageColor          = RGB(0xC2, 0xB1, 0xD6);
+const COLORREF internalMethodImageColor  = RGB(0x27, 0x27, 0x27);
 const COLORREF extensionMethodImageColor = RGB(0xA3, 0x87, 0xC3);
 const COLORREF classImageColor           = RGB(0x98, 0x6D, 0x00);
 
@@ -254,6 +255,7 @@ extern "C" __declspec(dllexport) int Vs2022_selectedIntelliSenseItemIsAMethod(HW
     pixelColor = getPixel(pointX, pointY + 3);
     switch (pixelColor) {
         case methodImageColor:
+        case internalMethodImageColor:
         case extensionMethodImageColor:
             result = 1;
             break;
