@@ -160,6 +160,29 @@ void getLastChildElement(IUIAutomationElement** el, bool releaseOriginalEl) {
     updateEl(hr, el, &tmp, releaseOriginalEl);
 }
 
+HRESULT findFirstElementByClassName(IUIAutomationElement** el, std::wstring className, bool releaseOriginalEl) {
+    VARIANT variant {};
+    variant.vt = VT_BSTR;
+    variant.bstrVal = SysAllocStringLen(className.c_str(), className.size());
+    IUIAutomationCondition* condition = nullptr;
+    auto hr = uiAutomation->CreatePropertyCondition(UIA_ClassNamePropertyId, variant, &condition);
+    if (FAILED(hr)) {
+        SysFreeString(variant.bstrVal);
+        return hr;
+    }
+    IUIAutomationElement* tmp;
+    hr = (*el)->FindFirst(TreeScope_Descendants, condition, &tmp);
+    if (FAILED(hr)) {
+        condition->Release();
+        SysFreeString(variant.bstrVal);
+        return hr;
+    }
+    condition->Release();
+    SysFreeString(variant.bstrVal);
+    updateEl(hr, el, &tmp, releaseOriginalEl);
+    return hr;
+}
+
 static bool containsState(IUIAutomationElement* el, INT state) {
     VARIANT variant;
     el->GetCurrentPropertyValue(UIA_LegacyIAccessibleStatePropertyId, &variant);

@@ -16,6 +16,7 @@ void getFirstChildElement(IUIAutomationElement** el, bool releaseOriginalEl = tr
 void getChildElementAt(IUIAutomationElement** el, int index, bool releaseOriginalEl);
 void getParentElement(IUIAutomationElement** el, bool releaseOriginalEl = true);
 void getLastChildElement(IUIAutomationElement** el, bool releaseOriginalEl = true);
+HRESULT findFirstElementByClassName(IUIAutomationElement** el, std::wstring className, bool releaseOriginalEl = true);
 bool isActiveTab(IUIAutomationElement* el);
 bool isButtonPressed(IUIAutomationElement* el);
 void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom);
