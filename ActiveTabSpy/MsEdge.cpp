@@ -14,17 +14,16 @@ extern "C" __declspec(dllexport) int MsEdge_getThreeDotBtnStatus(HWND hWnd) {
         getNextSiblingElement(&el);
     }
 
-    getFirstChildElement(&el);  // NonClientView
-    getFirstChildElement(&el);  // GlassBrowserFrameView
-    getFirstChildElement(&el);  // GlassBrowserCaptionButtonContainer
-    getNextSiblingElement(&el); // BrowserView
-    getFirstChildElement(&el);  // TopContainerView
-    getFirstChildElement(&el);  // TabStripRegionView
-    getNextSiblingElement(&el); // ToolbarView
-    getLastChildElement(&el);   // BrowserAppMenuButton
-
+    auto hr = findFirstElementByClassName(&el, L"BrowserAppMenuButton");
     BOOL isFocused;
-    el->get_CurrentHasKeyboardFocus(&isFocused);
+
+    if (SUCCEEDED(hr)) {
+        el->get_CurrentHasKeyboardFocus(&isFocused);
+    }
+    else {
+        isFocused = false;
+    }
+
     el->Release();
     return isFocused ? 1 : 0;
 }
