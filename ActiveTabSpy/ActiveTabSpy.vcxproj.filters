@@ -65,6 +65,9 @@
     <ClCompile Include="CopyQ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WinMerge2011.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActiveTabSpy.rc">

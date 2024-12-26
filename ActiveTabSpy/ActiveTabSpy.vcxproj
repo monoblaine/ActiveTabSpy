@@ -176,6 +176,7 @@
     <ClCompile Include="Vs2019.cpp" />
     <ClCompile Include="Vs2022.cpp" />
     <ClCompile Include="WindowsTerminal.cpp" />
+    <ClCompile Include="WinMerge2011.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActiveTabSpy.rc" />
