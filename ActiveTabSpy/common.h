@@ -33,3 +33,4 @@ void inspectActiveTab(
     Inspectable* inspectable
 );
 extern "C" __declspec(dllexport) void cleanup();
+extern "C" __declspec(dllexport) BSTR getFocusedElValue(int* result);

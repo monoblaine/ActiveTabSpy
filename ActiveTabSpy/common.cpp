@@ -345,3 +345,19 @@ extern "C" __declspec(dllexport) void cleanup() {
 
     CoUninitialize();
 }
+
+extern "C" __declspec(dllexport) BSTR getFocusedElValue(int* result) {
+    IUIAutomationElement* el = nullptr;
+    auto hr = getFocusedElement(&el);
+    BSTR value;
+    if (FAILED(hr)) {
+        value = nullptr;
+    }
+    else {
+        value = getElBstrValue(el);
+        el->Release();
+        el = nullptr;
+    }
+    *result = value == nullptr ? 0 : 1;
+    return value;
+}
