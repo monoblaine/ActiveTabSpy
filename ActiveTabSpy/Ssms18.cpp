@@ -246,9 +246,9 @@ extern "C" __declspec(dllexport) BSTR Ssms18_getCellContent(int* result) {
     IUIAutomationElement* tmp = nullptr;
     BSTR cellContent;
 
-    getFocusedElement(&el);
+    auto hr = getFocusedElement(&el);
 
-    if (!isOfType(el, UIA_EditControlTypeId)) {
+    if (FAILED(hr) || !isOfType(el, UIA_EditControlTypeId)) {
         goto fail;
     }
 
@@ -292,7 +292,10 @@ fail:
 
 extern "C" __declspec(dllexport) int Ssms18_getObjectExplorerNodeType() {
     IUIAutomationElement* el = nullptr;
-    getFocusedElement(&el);
+    auto hr = getFocusedElement(&el);
+    if (FAILED(hr)) {
+        return 0;
+    }
     getParentElement(&el);
     auto elementName = getElName(el);
     el->Release();

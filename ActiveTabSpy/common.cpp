@@ -84,9 +84,15 @@ std::wstring getElName(IUIAutomationElement* el) {
 
 BSTR getElBstrValue(IUIAutomationElement* el) {
     VARIANT variant;
-    el->GetCurrentPropertyValue(UIA_LegacyIAccessibleValuePropertyId, &variant);
-    BSTR value = SysAllocString(variant.bstrVal);
-    VariantClear(&variant);
+    BSTR value;
+    auto hr = el->GetCurrentPropertyValue(UIA_LegacyIAccessibleValuePropertyId, &variant);
+    if (FAILED(hr)) {
+        value = nullptr;
+    }
+    else {
+        value = SysAllocString(variant.bstrVal);
+        VariantClear(&variant);
+    }
     return value;
 }
 
@@ -192,19 +198,20 @@ HRESULT findFirstElementByAutomationId(IUIAutomationElement** el, std::wstring a
     IUIAutomationCondition* condition = nullptr;
     auto hr = uiAutomation->CreatePropertyCondition(UIA_AutomationIdPropertyId, variant, &condition);
     if (FAILED(hr)) {
-        SysFreeString(variant.bstrVal);
-        return hr;
+        goto cleanup;
     }
     IUIAutomationElement* tmp;
     hr = (*el)->FindFirst(TreeScope_Descendants, condition, &tmp);
     if (FAILED(hr)) {
-        condition->Release();
-        SysFreeString(variant.bstrVal);
-        return hr;
+        goto cleanup;
     }
-    condition->Release();
-    SysFreeString(variant.bstrVal);
     updateEl(hr, el, &tmp, releaseOriginalEl);
+cleanup:
+    if (condition != nullptr) {
+        condition->Release();
+    }
+    SysFreeString(variant.bstrVal);
+    VariantClear(&variant);
     return hr;
 }
 
@@ -261,11 +268,11 @@ void getWindowEl(HWND hWnd, IUIAutomationElement** el) {
     uiAutomation->ElementFromHandle(hWnd, el);
 }
 
-void getFocusedElement(IUIAutomationElement** el) {
+HRESULT getFocusedElement(IUIAutomationElement** el) {
     if (!uiAutomation) {
         init();
     }
-    uiAutomation->GetFocusedElement(el);
+    return uiAutomation->GetFocusedElement(el);
 }
 
 void inspectActiveTab(

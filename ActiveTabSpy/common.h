@@ -22,7 +22,7 @@ bool isActiveTab(IUIAutomationElement* el);
 bool isButtonPressed(IUIAutomationElement* el);
 void collectPointInfo(IUIAutomationElement* el, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom);
 void getWindowEl(HWND hWnd, IUIAutomationElement** el);
-void getFocusedElement(IUIAutomationElement** el);
+HRESULT getFocusedElement(IUIAutomationElement** el);
 void inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,

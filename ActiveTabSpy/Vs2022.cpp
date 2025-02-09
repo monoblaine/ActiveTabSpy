@@ -189,8 +189,11 @@ extern "C" __declspec(dllexport) void Vs2022_inspectActiveTab(
 
 extern "C" __declspec(dllexport) int Vs2022_isTextEditorFocused(HWND hWnd) {
     IUIAutomationElement* el = nullptr;
-    getFocusedElement(&el);
+    auto hr = getFocusedElement(&el);
     int result = 0;
+    if (FAILED(hr)) {
+        return result;
+    }
     if (
         getElName(el) == L"Text Editor" ||
         // Possibly a bug in VS2022 prevents "Text Editor" from being the focused el
