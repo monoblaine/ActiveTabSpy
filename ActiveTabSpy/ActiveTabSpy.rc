@@ -26,8 +26,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,9,0,0
- PRODUCTVERSION 1,9,0,0
+ FILEVERSION 1,10,0,0
+ PRODUCTVERSION 1,10,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -44,12 +44,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Serhan Apaydın"
             VALUE "FileDescription", "Automation API Utilities"
-            VALUE "FileVersion", "1.9.0.0"
+            VALUE "FileVersion", "1.10.0.0"
             VALUE "InternalName", "ActiveTabSpy.dll"
-            VALUE "LegalCopyright", "Copyright (C) Serhan Apaydın 2022"
+            VALUE "LegalCopyright", "Copyright (C) Serhan Apaydın 2025"
             VALUE "OriginalFilename", "ActiveTabSpy.dll"
             VALUE "ProductName", "ActiveTabSpy"
-            VALUE "ProductVersion", "1.9.0.0"
+            VALUE "ProductVersion", "1.10.0.0"
         END
     END
     BLOCK "VarFileInfo"
