@@ -85,7 +85,6 @@ std::wstring getElName(IUIAutomationElement* el) {
 BSTR getElBstrValue(IUIAutomationElement* el) {
     VARIANT variant;
     el->GetCurrentPropertyValue(UIA_LegacyIAccessibleValuePropertyId, &variant);
-    el->Release();
     BSTR value = SysAllocString(variant.bstrVal);
     VariantClear(&variant);
     return value;
