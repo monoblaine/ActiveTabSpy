@@ -118,6 +118,9 @@ static inline void updateEl(HRESULT hr, IUIAutomationElement** el, IUIAutomation
         *el = *tmp;
     }
     else {
+        if (releaseOriginalEl) {
+            (*el)->Release();
+        }
         *el = nullptr;
     }
 }
