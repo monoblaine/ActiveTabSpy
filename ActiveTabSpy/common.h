@@ -7,6 +7,7 @@ COLORREF getPixel(int x, int y);
 bool isOfType(IUIAutomationElement* el, CONTROLTYPEID typeId);
 bool isClsMatch(IUIAutomationElement* el, const wchar_t* clsName);
 std::wstring getElName(IUIAutomationElement* el);
+BSTR getElBstrName(IUIAutomationElement* el);
 BSTR getElBstrValue(IUIAutomationElement* el);
 std::wstring getAutomationId(IUIAutomationElement* el);
 std::wstring getClassName(IUIAutomationElement* el);
@@ -34,3 +35,4 @@ void inspectActiveTab(
 );
 extern "C" __declspec(dllexport) void cleanup();
 extern "C" __declspec(dllexport) BSTR getFocusedElValue(int* result);
+extern "C" __declspec(dllexport) BSTR getFocusedElName(int* result);

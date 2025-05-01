@@ -82,6 +82,14 @@ std::wstring getElName(IUIAutomationElement* el) {
     return name;
 }
 
+BSTR getElBstrName(IUIAutomationElement* el) {
+    BSTR name;
+    auto hr = el->get_CurrentName(&name);
+    return FAILED(hr)
+        ? nullptr
+        : name;
+}
+
 BSTR getElBstrValue(IUIAutomationElement* el) {
     VARIANT variant;
     BSTR value;
@@ -355,6 +363,22 @@ extern "C" __declspec(dllexport) BSTR getFocusedElValue(int* result) {
     }
     else {
         value = getElBstrValue(el);
+        el->Release();
+        el = nullptr;
+    }
+    *result = value == nullptr ? 0 : 1;
+    return value;
+}
+
+extern "C" __declspec(dllexport) BSTR getFocusedElName(int* result) {
+    IUIAutomationElement* el = nullptr;
+    auto hr = getFocusedElement(&el);
+    BSTR value;
+    if (FAILED(hr)) {
+        value = nullptr;
+    }
+    else {
+        value = getElBstrName(el);
         el->Release();
         el = nullptr;
     }
