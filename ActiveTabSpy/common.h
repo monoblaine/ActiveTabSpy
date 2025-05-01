@@ -36,3 +36,4 @@ void inspectActiveTab(
 extern "C" __declspec(dllexport) void cleanup();
 extern "C" __declspec(dllexport) BSTR getFocusedElValue(int* result);
 extern "C" __declspec(dllexport) BSTR getFocusedElName(int* result);
+extern "C" __declspec(dllexport) void getFocusedElCoords(int* result, int* pointX, int* pointY, int* left, int* right, int* top, int* bottom);

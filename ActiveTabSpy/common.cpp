@@ -385,3 +385,21 @@ extern "C" __declspec(dllexport) BSTR getFocusedElName(int* result) {
     *result = value == nullptr ? 0 : 1;
     return value;
 }
+
+extern "C" __declspec(dllexport) void getFocusedElCoords(
+    int* result,
+    int* pointX, int* pointY,
+    int* left, int* right,
+    int* top, int* bottom
+) {
+    IUIAutomationElement* el = nullptr;
+    auto hr = getFocusedElement(&el);
+    if (FAILED(hr)) {
+        *result = 0;
+        return;
+    }
+    collectPointInfo(el, pointX, pointY, left, right, top, bottom);
+    el->Release();
+    el = nullptr;
+    *result = 1;
+}
