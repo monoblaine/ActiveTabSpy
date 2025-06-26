@@ -280,6 +280,19 @@ cleanup:
     return result;
 }
 
+// 1: is an IntelliSense item and is a method
+// 2: NOT(1) and text editor is focused
+// 0: None of the above
+extern "C" __declspec(dllexport) int Vs2022_getFocusedElementType(HWND hWnd) {
+    if (Vs2022_selectedIntelliSenseItemIsAMethod(hWnd, 1)) {
+        return 1;
+    }
+    if (Vs2022_isTextEditorFocused(hWnd)) {
+        return 2;
+    }
+    return 0;
+}
+
 extern "C" __declspec(dllexport) int Vs2022_popupWinExists(HWND hWnd) {
     IUIAutomationElement* el = nullptr;
     getWindowEl(hWnd, &el);
