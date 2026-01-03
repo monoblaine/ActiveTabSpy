@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "common.h"
+#include <tchar.h>
 
 static IUIAutomationTreeWalker* treeWalker = nullptr;
 static IUIAutomation* uiAutomation = nullptr;
+IUIAutomationElement* toolbar = nullptr;
 static HDC dc = GetDC(NULL);
 
 static bool init() {
@@ -19,6 +21,12 @@ static bool init() {
 
         if (SUCCEEDED(hr)) {
             uiAutomation->get_ContentViewWalker(&treeWalker);
+            auto hDesktop = GetDesktopWindow();
+            auto hTray = FindWindowEx(hDesktop, NULL, _T("Shell_TrayWnd"), NULL);
+            auto hReBar = FindWindowEx(hTray, NULL, _T("ReBarWindow32"), NULL);
+            auto hTask = FindWindowEx(hReBar, NULL, _T("MSTaskSwWClass"), NULL);
+            auto hToolbar = FindWindowEx(hTask, NULL, _T("MSTaskListWClass"), NULL);
+            uiAutomation->ElementFromHandle(hToolbar, &toolbar);
         }
     }
 
@@ -283,6 +291,59 @@ HRESULT getFocusedElement(IUIAutomationElement** el) {
     return uiAutomation->GetFocusedElement(el);
 }
 
+static bool IsButtonWithPopup(IUIAutomationElement* el, int* buttonState) {
+    CONTROLTYPEID typeId;
+    el->get_CurrentControlType(&typeId);
+    if (typeId != UIA_ButtonControlTypeId) {
+        return false;
+    }
+    VARIANT variant;
+    el->GetCurrentPropertyValue(UIA_LegacyIAccessibleStatePropertyId, &variant);
+    auto hasPopup = ((*buttonState = variant.intVal) & STATE_SYSTEM_HASPOPUP) != 0;
+    VariantClear(&variant);
+    return hasPopup;
+}
+
+static void SendLeftClickToCoords (int x, int y) {
+    const double XSCALEFACTOR = 65535.0 / (GetSystemMetrics(SM_CXSCREEN) - 1);
+    const double YSCALEFACTOR = 65535.0 / (GetSystemMetrics(SM_CYSCREEN) - 1);
+    POINT cursorPos;
+    GetCursorPos(&cursorPos);
+    double cx = cursorPos.x * XSCALEFACTOR;
+    double cy = cursorPos.y * YSCALEFACTOR;
+    double nx = x * XSCALEFACTOR;
+    double ny = y * YSCALEFACTOR;
+    INPUT input = { 0 };
+    input.type = INPUT_MOUSE;
+    input.mi.dx = (LONG) nx;
+    input.mi.dy = (LONG) ny;
+    input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP;
+    SendInput(1, &input, sizeof(INPUT));
+    input.mi.dx = (LONG) cx;
+    input.mi.dy = (LONG) cy;
+    input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
+    SendInput(1, &input, sizeof(INPUT));
+}
+
+static void SendLeftClickToTaskBarButton (IUIAutomationElement* el) {
+    if (!el) {
+        return;
+    }
+    VARIANT variant;
+    el->GetCurrentPropertyValue(UIA_BoundingRectanglePropertyId, &variant);
+    double* rectData = nullptr;
+    SafeArrayAccessData(variant.parray, (void**) &rectData);
+    auto left = (int) rectData[0];
+    auto top = (int) rectData[1];
+    auto right = left + (int) rectData[2];
+    auto bottom = top + (int) rectData[3];
+    SafeArrayUnaccessData(variant.parray);
+    VariantClear(&variant);
+    auto pointX = left + (int) ((right - left) / 2);
+    auto pointY = top + (int) ((bottom - top) / 2);
+    SendLeftClickToCoords(pointX, pointY);
+}
+
 void inspectActiveTab(
     HWND hWnd, int isHorizontal,
     int* pointX, int* pointY,
@@ -402,4 +463,24 @@ extern "C" __declspec(dllexport) void getFocusedElCoords(
     el->Release();
     el = nullptr;
     *result = 1;
+}
+
+extern "C" __declspec(dllexport) void rearrangeFileExplorerWindowsMruStates () {
+    if (!uiAutomation) {
+        init();
+    }
+    IUIAutomationElement* el = toolbar;
+    int buttonState;
+    getLastChildElement(&el, false);
+    while (el) {
+        if (
+            getAutomationId(el) == L"Microsoft.Windows.Explorer" &&
+            IsButtonWithPopup(el, &buttonState) &&
+            (buttonState & STATE_SYSTEM_PRESSED) == 0
+        ) {
+            Sleep(50);
+            SendLeftClickToTaskBarButton(el);
+        }
+        getPrevSiblingElement(&el);
+    }
 }
