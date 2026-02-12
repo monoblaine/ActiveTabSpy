@@ -9,9 +9,9 @@
 #include <codecvt>
 #endif
 
-const COLORREF activeTabColor    = RGB(0x24, 0x27, 0x2B);
-const COLORREF methodImageColor1 = RGB(0x5D, 0x2E, 0x92); // .net
-const COLORREF methodImageColor2 = RGB(0x5B, 0x2E, 0x91); // cpp
+const COLORREF activeTabColor_CoolSlate = RGB(0x24, 0x27, 0x2B);
+const COLORREF methodImageColor1        = RGB(0x5D, 0x2E, 0x92); // .net
+const COLORREF methodImageColor2        = RGB(0x5B, 0x2E, 0x91); // cpp
 
 static bool endsWith (const std::wstring& str, const std::wstring& suffix) {
     return str.size() >= suffix.size()
@@ -41,7 +41,7 @@ static bool isActiveTabByColor(IUIAutomationElement* tabItem) {
     tabItem->get_CurrentBoundingRectangle(&rect);
     int x = rect.left + 4 + 2;
     int y = rect.top + 2 + 2;
-    return getPixel(x, y) == activeTabColor;
+    return getPixel(x, y) == activeTabColor_CoolSlate;
 }
 
 static IUIAutomationElement* findActiveTabByColorAndName(IUIAutomationElement* tabControl, std::wstring* tabName) {
