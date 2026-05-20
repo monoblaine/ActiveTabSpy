@@ -488,3 +488,7 @@ static void rearrangeWindowMruStatesByAutomationId (const wchar_t* automationId)
 extern "C" __declspec(dllexport) void rearrangeFileExplorerWindowsMruStates () {
     rearrangeWindowMruStatesByAutomationId(L"Microsoft.Windows.Explorer");
 }
+
+extern "C" __declspec(dllexport) void rearrangeLibreOfficeWriterWindowsMruStates () {
+    rearrangeWindowMruStatesByAutomationId(L"TheDocumentFoundation.LibreOffice.Writer");
+}
