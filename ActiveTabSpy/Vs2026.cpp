@@ -10,6 +10,7 @@
 #endif
 
 const COLORREF activeTabColor_CoolSlate = RGB(0x24, 0x27, 0x2B);
+const COLORREF activeTabColor_Dark      = RGB(0x28, 0x28, 0x28);
 const COLORREF methodImageColor1        = RGB(0x5D, 0x2E, 0x92); // .net
 const COLORREF methodImageColor2        = RGB(0x5B, 0x2E, 0x91); // cpp
 
@@ -41,7 +42,7 @@ static bool isActiveTabByColor(IUIAutomationElement* tabItem) {
     tabItem->get_CurrentBoundingRectangle(&rect);
     int x = rect.left + 4 + 2;
     int y = rect.top + 2 + 2;
-    return getPixel(x, y) == activeTabColor_CoolSlate;
+    return getPixel(x, y) == activeTabColor_Dark;
 }
 
 static IUIAutomationElement* findActiveTabByColorAndName(IUIAutomationElement* tabControl, std::wstring* tabName) {
