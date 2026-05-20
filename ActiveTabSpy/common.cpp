@@ -465,7 +465,7 @@ extern "C" __declspec(dllexport) void getFocusedElCoords(
     *result = 1;
 }
 
-extern "C" __declspec(dllexport) void rearrangeFileExplorerWindowsMruStates () {
+static void rearrangeWindowMruStatesByAutomationId (const wchar_t* automationId) {
     if (!uiAutomation) {
         init();
     }
@@ -474,7 +474,7 @@ extern "C" __declspec(dllexport) void rearrangeFileExplorerWindowsMruStates () {
     getLastChildElement(&el, false);
     while (el) {
         if (
-            getAutomationId(el) == L"Microsoft.Windows.Explorer" &&
+            getAutomationId(el) == automationId &&
             IsButtonWithPopup(el, &buttonState) &&
             (buttonState & STATE_SYSTEM_PRESSED) == 0
         ) {
@@ -483,4 +483,8 @@ extern "C" __declspec(dllexport) void rearrangeFileExplorerWindowsMruStates () {
         }
         getPrevSiblingElement(&el);
     }
+}
+
+extern "C" __declspec(dllexport) void rearrangeFileExplorerWindowsMruStates () {
+    rearrangeWindowMruStatesByAutomationId(L"Microsoft.Windows.Explorer");
 }
