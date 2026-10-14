@@ -9,8 +9,6 @@
 #include <codecvt>
 #endif
 
-const COLORREF activeTabColor_CoolSlate = RGB(0x24, 0x27, 0x2B);
-const COLORREF activeTabColor_Dark      = RGB(0x28, 0x28, 0x28);
 const COLORREF methodImageColor1        = RGB(0x5D, 0x2E, 0x92); // .net
 const COLORREF methodImageColor2        = RGB(0x5B, 0x2E, 0x91); // cpp
 
@@ -37,26 +35,6 @@ void log(std::wstringstream& ss) {
 }
 #endif
 
-static bool isActiveTabByColor(IUIAutomationElement* tabItem) {
-    RECT rect;
-    tabItem->get_CurrentBoundingRectangle(&rect);
-    int x = rect.left + 4 + 2;
-    int y = rect.top + 2 + 2;
-    return getPixel(x, y) == activeTabColor_Dark;
-}
-
-static IUIAutomationElement* findActiveTabByColorAndName(IUIAutomationElement* tabControl, std::wstring* tabName) {
-    IUIAutomationElement* tabItem = tabControl;
-    getFirstChildElement(&tabItem, false);
-    while (tabItem) {
-        if (tabName->compare(getElName(tabItem)) == 0 && isActiveTabByColor(tabItem)) {
-            return tabItem;
-        }
-        getNextSiblingElement(&tabItem);
-    }
-    return nullptr;
-}
-
 static IUIAutomationElement* getSelection(IUIAutomationElement* parent) {
     IUIAutomationSelectionPattern* selectionPattern = nullptr;
     IUIAutomationElementArray* selections = nullptr;
@@ -77,104 +55,6 @@ static IUIAutomationElement* getSelection(IUIAutomationElement* parent) {
         selections->Release();
     }
     return selection;
-}
-
-class Vs2026 : public Inspectable {
-    public:
-    virtual IUIAutomationElement* findActiveTab(IUIAutomationElement* windowEl, bool isHorizontal) {
-        IUIAutomationElement* el = windowEl;
-#ifdef _DEBUG
-        std::wstringstream ss(L"");
-#endif
-        getFirstChildElement(&el, false);
-        if (!el) {
-#ifdef _DEBUG
-            ss << L"getFirstChildElement of windowEl failed";
-            log(ss);
-#endif
-            return nullptr;
-        }
-        do getNextSiblingElement(&el);
-        while (el && !isClsMatch(el, L"DockRoot"));
-        if (!el) {
-#ifdef _DEBUG
-            ss << L"DockRoot not found!";
-            log(ss);
-#endif
-            return nullptr;
-        }
-        if (isHorizontal) {
-#ifdef _DEBUG
-            ss << L"isHorizontal case is not implemented.";
-            log(ss);
-            el->Release();
-#endif
-        }
-        else {
-            getLastChildElement(&el);
-            if (!el || !isClsMatch(el, L"DocumentGroup")) {
-#ifdef _DEBUG
-                ss << L"DocumentGroup not found!";
-                log(ss);
-#endif
-                if (el) {
-                    el->Release();
-                }
-                return nullptr;
-            }
-            auto selection = getSelection(el);
-            auto selectionName = getElName(selection);
-            selection->Release();
-#ifdef _DEBUG
-            ss << L"selectionName: " << selectionName;
-            log(ss);
-#endif
-            getPrevSiblingElement(&el); // TabControl/UnpinnedTabs
-            if (!el || !(isClsMatch(el, L"TabControl") && getAutomationId(el) == L"UnpinnedTabs")) {
-#ifdef _DEBUG
-                ss << L"TabControl/UnpinnedTabs not found!";
-                log(ss);
-#endif
-                if (el) {
-                    el->Release();
-                }
-                return nullptr;
-            }
-            auto activeTab = findActiveTabByColorAndName(el, &selectionName);
-            el->Release();
-            if (activeTab) {
-                return activeTab;
-            }
-            else {
-#ifdef _DEBUG
-                ss << L"activeTab not found";
-                log(ss);
-#endif
-            }
-        }
-        return nullptr;
-    }
-};
-
-Vs2026 inspectable;
-
-extern "C" __declspec(dllexport) void Vs2026_inspectActiveTab(
-    HWND hWnd, int isHorizontal,
-    int* pointX, int* pointY,
-    int* left, int* right,
-    int* top, int* bottom,
-    int* prevPointX, int* prevPointY,
-    int* nextPointX, int* nextPointY
-) {
-    inspectActiveTab(
-        hWnd, isHorizontal,
-        pointX, pointY,
-        left, right,
-        top, bottom,
-        prevPointX, prevPointY,
-        nextPointX, nextPointY,
-        &inspectable
-    );
 }
 
 extern "C" __declspec(dllexport) int Vs2026_isTextEditorFocused(HWND hWnd) {

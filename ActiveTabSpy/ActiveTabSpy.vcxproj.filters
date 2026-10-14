@@ -38,9 +38,6 @@
     <ClCompile Include="MsEdge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vs2019.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Firefox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,9 +45,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ssms18.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Vs2022.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WindowsTerminal.cpp">
