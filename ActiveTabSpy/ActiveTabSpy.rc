@@ -63,7 +63,7 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Turkish (TÃ¼rkiye) resources
+// Turkish (Türkiye) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_TRK)
 LANGUAGE LANG_TURKISH, SUBLANG_DEFAULT
@@ -93,7 +93,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Turkish (TÃ¼rkiye) resources
+#endif    // Turkish (Türkiye) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
